@@ -1,0 +1,23 @@
+
+<div id="columnEditorOverlay" style="position:absolute;width:820px;height:100%;z-index:21;display:none;">
+
+	<div class="filepicker-close">
+		<a href="#" id="filepickerClose" onclick="return (function(){ bd.overlay.ctr.hideTopOverlay();return false;})();">X</a>
+	</div>
+	<div class="centerContainer" style="width:820px;margin: 0px auto;">
+	<div id="columnEditorOverlayContent">
+		<div style="float:left;width:600px;height:480px;margin-left:100px;margin-top:25px;text-align:center;overflow-y:scroll;background-color:#DDDDDD;">
+			<div class="column-container">
+				<button id="filepickerNewColumn" style="float:left;" onclick="bd.columnEdit.ctr.addColumn()">New Column</button><br/>
+				<div class="column-list">
+					<ul id="filepickerColumnList">
+					<!-- Costumes should be dynamically added here -->
+					</ul>
+				</div>
+				<!--<div style="width:50px;height:50px;position:relative;cursor:pointer;background-color:none;margin-left:auto;margin-right:auto;" onclick="bd.methodTag.table.addColumnBox()"><img src="/static/images/buttons/additem-up.png"/></div>
+				<div style="float:left;width:100%;margin-left:auto;margin-right:auto;background-color:none;">Add Column</div>-->
+			</div>
+		</div>
+	</div>
+	</div>
+</div>

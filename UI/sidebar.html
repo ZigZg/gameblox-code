@@ -1,0 +1,548 @@
+{% load range %}
+
+
+<!--Code for the sidebar in the Design view. My contribution is under the div with the id "sidebarTablePanel"-->
+<div id="sideBar" style="position:absolute;width:320px;height:360px;top:270px;z-index:1;background-color:none;">
+
+	<div id="noEntityPanel" style="float:left;width:100%;height:30px;display:none">
+		<span>Click the plus sign above.</span>
+	</div>
+
+	<div id="sideBarTabs" style="float:left;width:100%;">
+		<div id="propertiesTab" class="sideBarTab" onclick="bd.switchSidebarPanel('properties')">Properties</div>
+		<div id="instancesTab" class="sideBarTab" onclick="bd.switchSidebarPanel('instances')">Instances</div>
+		<div id="traitsTab" class="sideBarTab" onclick="bd.switchSidebarPanel('traits')">Custom Properties</div>
+	</div>
+
+<div id="sideBarGamePanel" style="float:left;width:100%;height:120px;overflow-y:scroll;border-top:1px solid black;border-bottom:2px solid black;background-color:none">
+
+	<div style="float:left;width:100%"><span>Name <input class="nameInput" type="text" /></span></div>
+
+	<div style="float:left;width:100%"><span>Description <textarea class="descriptionInput" ></textarea></span></div>
+
+	<div style="float:left;width:100%"><span>Draft Version Notes <textarea class="draftVersionNotesInput" ></textarea></span></div>
+
+</div>
+
+
+<div id="sideBarPiecePanel" style="float:left;width:100%;height:120px;border-bottom:1px solid black;background-color:none;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input id="pieceName" type="text" style="width:114px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pieceName');" onchange="bd.sideBar.ctr.updateModelFromField('pieceName');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Height <input id="pieceHeight" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pieceHeight');" onchange="bd.sideBar.ctr.updateModelFromField('pieceHeight');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Width <input id="pieceWidth" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pieceWidth');" onchange="bd.sideBar.ctr.updateModelFromField('pieceWidth');" /></div>
+		<input id="gamePieceRadio" type="radio" name="playerPieces" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Shared Piece<br><input id="playerPieceRadio" type="radio" name="playerPieces" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Piece per player<br/>
+		<input type="checkbox" id="dragabblePieceCheckbox" name="dragabblePieceCheckbox" value="draggable" onchange="bd.sideBar.ctr.draggableCheckChanged(this)">Draggable <input type="checkbox" id="visiblePieceCheckbox" name="visiblePieceCheckbox" value="visible" onchange="bd.sideBar.ctr.visibleCheckChanged(this)">Visible
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])">
+		<img id="pieceImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+
+</div>
+
+<div id="sideBarPhaserPiecePanel" style="float:left;width:100%;height:120px;border-bottom:1px solid black;background-color:none;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Height <input class="heightInput" type="text" style="width:34px;" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Width <input class="widthInput" type="text" style="width:34px;" /></div>
+		<span>Share Mode: <span class="shareModeName"></span></span>
+		<br/>
+		<input type="checkbox" class="isDraggableCheckbox" name="dragabblePhaserPieceCheckbox" value="draggable" >Draggable <input type="checkbox" class="isVisibleCheckbox" name="visiblePhaserPieceCheckbox" value="visible" >Visible
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])">
+		<img id="phaserPieceImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+
+</div>
+
+
+<div id="sideBarPhaserPhysicsPiecePanel" style="float:left;width:100%;height:280px;border-bottom:1px solid black;background-color:none;overflow-y:scroll;display:none">
+
+	<div style="float:left;width:320px;margin-top:5px;margin-bottom:15px;background-color:none;">
+
+		<div style="float:left;width:160px;text-align:center;background-color:none">
+			<div style="float:left;width:50px;height:50px;margin-left:55px;position:relative;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])">
+				<img id="phaserPhysicsPieceImageSelector" style="height:50px;width:50px;" src="" />
+				<img class="imageEditPencil" style="position:absolute;top:30px;left:30px;height:30px;width:30px;" src="/static/images/buttons/edit-costume-up.png" />
+			</div>
+		</div>
+		<!-- <div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div> -->
+		<div style="float:left;width:160px;text-align:center;background-color:none">
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<span>Name</span>
+			</div>
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<input class="nameInput" type="text" style="width:114px;" />
+			</div>
+		</div>
+	</div>
+
+	<div style="float:left;width:320px;margin-bottom:15px;background-color:none;">
+		<div style="float:left;width:80px;text-align:center;background-color:none">
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<span>Height</span>
+			</div>
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<input class="heightInput" type="text" style="width:34px;" />
+			</div>
+		</div>
+
+		<div style="float:left;width:80px;text-align:center;background-color:none">
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<span>Width</span>
+			</div>
+			<div style="float:left;width:100%;height:20px;background-color:none">
+				<input class="widthInput" type="text" style="width:34px;" />
+			</div>
+		</div>
+
+		<div style="float:left;width:120px;margin-left:40px;background-color:none">
+			<input type="checkbox" class="isDraggableCheckbox" id="dragabblePhaserPhysicsPieceCheckbox" name="dragabblePhaserPieceCheckbox" value="draggable" />Draggable 
+		</div>
+		<div style="float:left;width:120px;margin-left:40px;background-color:none">
+			<input type="checkbox" id="visiblePhaserPieceCheckbox" class="isVisibleCheckbox" name="visiblePhaserPhysicsPieceCheckbox" value="visible" />Visible
+		</div>
+	</div>
+
+	<div style="float:left;width:320px;margin-bottom:15px;background-color:none;">
+		<div style="float:left;width:160px;background-color:none">
+			<div style="float:left;width:100%;text-align:center;background-color:none">
+				<input type="checkbox" class="allowGravityCheckbox" id="allowGravityPhaserPhysicsPieceCheckbox" name="allowGravityPhaserPhysicsPieceCheckbox" value="allowGravity" /> Allow Gravity
+			</div>
+			<div style="float:left;width:80px;text-align:center;background-color:none">
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<span>Gravity X</span>
+				</div>
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<input class="gravityXInput" type="text" style="width:34px;" />
+				</div>
+			</div>
+			<div style="float:left;width:80px;text-align:center;background-color:none">
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<span>Gravity Y</span>
+				</div>
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<input class="gravityYInput" type="text" style="width:34px;" />
+				</div>
+			</div>
+
+		</div>
+
+		<div style="float:left;width:160px;background-color:none">
+			<div style="float:left;width:100%;margin-top:20px;background-color:none">
+				<div style="float:left;width:80px;text-align:center;background-color:none">
+					<div style="float:left;width:100%;height:20px;background-color:none">
+						<span>Friction X</span>
+					</div>
+					<div style="float:left;width:100%;height:20px;background-color:none">
+						<input class="frictionXInput" type="text" style="width:34px;" />
+					</div>
+				</div>
+				<div style="float:left;width:80px;text-align:center;background-color:none">
+
+					<div style="float:left;width:100%;height:20px;background-color:none">
+						<span>Friction Y</span>
+					</div>
+					<div style="float:left;width:100%;height:20px;background-color:none">
+						<input class="frictionYInput" type="text" style="width:34px;" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="float:left;width:160px;display:none;background-color:none">
+			<input class="rotateRadio" type="radio" name="phaserPhysicsPieceRotate" value="rotate" onchange="return false;">Rotate 360 degrees<br/>
+			<input class="flipRadio" type="radio" name="phaserPhysicsPieceRotate" value="flip" onchange="return false;">Flip left and right<br/>
+			<input class="noRotationRadio" type="radio" name="phaserPhysicsPieceRotate" value="none" onchange="return false;">Don't rotate
+		</div>
+
+	</div>
+
+	<div style="float:left;width:320px;background-color:none;">
+		<div style="float:left;width:160px;background-color:none">
+			<div style="float:left;width:160px;height:40px;background-color:none">
+				<input type="checkbox" class="passthroughCheckbox" id="passthroughPhaserPhysicsPieceCheckbox" name="passthroughPhaserPhysicsPieceCheckbox" value="passthrough" /> Pass through other sprites
+			</div>
+			<div style="float:left;width:160px;height:40px;background-color:none">
+				<input type="checkbox" class="isMovableCheckbox" id="movablePhaserPhysicsPieceCheckbox" name="movablePhaserPhysicsPieceCheckbox" value="movable" /> Reacts to collisions
+			</div>
+		</div>
+
+		<div style="float:left;width:160px;background-color:none">
+
+			<div style="float:left;width:160px;height:20px;margin-bottom:5px;background-color:none;">
+				<input type="checkbox" class="collideWithBoundsCheckbox" id="collideWithBoundsPhaserPhysicsPieceCheckbox" name="collideWithBoundsPhaserPhysicsPieceCheckbox" value="collideWithBounds" /> Collide with edges
+			</div>
+			<!--
+			<div style="float:left;width:100px;height:30px;background-color:none">Bounce X<input class="bounceXInput" type="text" style="width:34px;" /></div>
+			<div style="float:left;width:100px;height:30px;background-color:none">Bounce Y<input class="bounceYInput" type="text" style="width:34px;" /></div>
+			-->
+			<div style="float:left;width:80px;text-align:center;background-color:none">
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<span>Bounce X</span>
+				</div>
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<input class="bounceXInput" type="text" style="width:34px;" />
+				</div>
+			</div>
+			<div style="float:left;width:80px;text-align:center;background-color:none">
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<span>Bounce Y</span>
+				</div>
+				<div style="float:left;width:100%;height:20px;background-color:none">
+					<input class="bounceYInput" type="text" style="width:34px;" />
+				</div>
+			</div>
+
+
+		</div>
+
+
+
+
+
+		<!--
+		<span>Coordinate at:</span>
+		<input class="topLeftCoordinateRadio" type="radio" name="phaserPhysicsPieceCoordinateLocation" value="topLeft" onchange="bd.sideBar.ctr.coordinateRadioChanged(this)">Top-left<br/>
+		<input class="centerCoordinateRadio" type="radio" name="phaserPhysicsPieceCoordinateLocation" value="center" onchange="bd.sideBar.ctr.coordinateRadioChanged(this)">Center -->
+
+	</div>
+
+
+</div>
+
+<div id="sideBarMelonPiecePanel" style="float:left;width:100%;height:120px;border-bottom:1px solid black;background-color:none;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Height <input class="heightInput" type="text" style="width:34px;" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Width <input class="widthInput" type="text" style="width:34px;" /></div>
+
+		<input type="checkbox" class="isDraggableCheckbox" name="dragabbleMelonPieceCheckbox" value="draggable" />Draggable <input type="checkbox" class="isVisibleCheckbox" name="visibleMelonPieceCheckbox" value="visible" />Visible
+		<br/>
+		<span>Animation:</span>
+		<input class="animationOffRadio" type="radio" name="animationMelonPiece" value="off" onchange="return false;">Off
+		<input class="animationOnRadio" type="radio" name="animationMelonPiece" value="on" onchange="return false;">On<br/>
+		<input class="animationWhenMovingRadio" type="radio" name="animationMelonPiece" value="whenMoving" onchange="return false;">On when moving
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetSpriteSheet'])">
+		<img id="melonPieceImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+
+</div>
+
+<div id="sideBarPhysicsRectanglePanel" style="float:left;width:100%;height:120px;background-color:none;border-bottom:1px solid black;overflow-y:scroll;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input id="physicsRectangleName" type="text" style="width:114px;" onkeyup="bd.sideBar.ctr.updateModelFromField('physicsRectangleName');" onchange="bd.sideBar.ctr.updateModelFromField('physicsRectangleName');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Height <input id="physicsRectangleHeight" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('physicsRectangleHeight');" onchange="bd.sideBar.ctr.updateModelFromField('physicsRectangleHeight');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Width <input id="physicsRectangleWidth" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('physicsRectangleWidth');" onchange="bd.sideBar.ctr.updateModelFromField('physicsRectangleWidth');" /></div>
+
+		<div style="float:left;width:200px;height:30px;background-color:none">Bounce <input id="physicsRectangleBounciness" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('physicsRectangleBounciness');" onchange="bd.sideBar.ctr.updateModelFromField('physicsRectangleBounciness');" /> Friction <input id="physicsRectangleFriction" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('physicsRectangleFriction');" onchange="bd.sideBar.ctr.updateModelFromField('physicsRectangleFriction');" /></div>
+		<!-- <input id="gamePhysicsRectangleRadio" type="radio" name="playerPhysicsRectangles" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Game Physics Rectangle<br><input id="playerPhysicsRectangleRadio" type="radio" name="playerPhysicsRectangles" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Player PhysicsRectangle<br/> -->
+		<input id="wallPhysicsRectangleRadio" type="radio" name="movementPhysicsRectangles" value="wall" onchange="bd.sideBar.ctr.movementTypeRadioChanged(this)">Wall <!-- <input id="bulletPhysicsRectangleRadio" type="radio" name="movementPhysicsRectangles" value="bullet" onchange="bd.sideBar.ctr.movementTypeRadioChanged(this)">Bullet --> <input id="itemPhysicsRectangleRadio" type="radio" name="movementPhysicsRectangles" value="item" onchange="bd.sideBar.ctr.movementTypeRadioChanged(this)">Item<br/>
+		<!-- <input type="checkbox" id="dragabblePhysicsRectangleCheckbox" name="dragabblePhysicsRectangleCheckbox" value="draggable" onchange="bd.sideBar.ctr.draggableCheckChanged(this)">Draggable --> <input type="checkbox" id="canRotatePhysicsRectangleCheckbox" name="canRotatePhysicsRectangleCheckbox" value="canRotate" onchange="bd.sideBar.ctr.canRotateCheckChanged(this)">Can Rotate
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])">
+		<img id="physicsRectangleImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+
+</div>
+
+<div id="sideBarPathPanel" style="float:left;width:100%;height:120px;background-color:yellow;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:purple;">
+		<div style="float:left;width:200px;height:30px;background-color:orange">Name <input id="pathName" type="text" style="width:114px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pathName');" onchange="bd.sideBar.ctr.updateModelFromField('pathName');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:orange">Height <input id="pathHeight" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pathHeight');" onchange="bd.sideBar.ctr.updateModelFromField('pathHeight');" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:orange">Width <input id="pathWidth" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('pathWidth');" onchange="bd.sideBar.ctr.updateModelFromField('pathWidth');" /></div>
+		<input id="gameTargetRadio" type="radio" name="playerTargets" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Shared Target<br><input id="playerTargetRadio" type="radio" name="playerTargets" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Target per player<br/>
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])"></div>
+</div>
+
+<div id="sideBarDeckPanel" style="float:left;width:100%;height:100%;background-color:yellow;display:none">
+
+	<div style="float:left;width:100%"><span>Name <input id="deckName" type="text" /></span></div>
+
+	<div style="float:left;width:100%">Picture</div>
+
+</div>
+
+<div id="sideBarPlayerPanel" style="float:left;width:100%;height:120px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+
+		<span>Initial View:</span><select id="playerStartingGameView" onchange="bd.sideBar.ctr.updatePlayerDefaultView()"><option>Game View 1</option></select>
+
+	</div>
+	<!-- <div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.image.ctr.setupImageSelector(0)"></div> -->
+</div>
+
+
+<div id="sideBarRolePanel" style="float:left;width:100%;height:120px;background-color:yellow;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:purple;">
+		<div style="float:left;width:200px;height:30px;background-color:orange">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+
+		<select id="roleStartingGameView" onchange="bd.sideBar.ctr.updateRoleDefaultView()"><option>Game View 1</option></select>
+
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])"></div>
+
+</div>
+
+<div id="sideBarLabelPanel" style="float:left;width:100%;height:120px;background-color:none;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:100%;height:120px;background-color:none;">
+		<div style="float:left;width:300px;">
+			<div style="float:left;width:150px;height:30px;background-color:none">Name <input id="labelName" type="text" style="width:64px;" class="nameInput" /></div>
+			<div style="float:left;width:150px;height:30px;background-color:none">Text <input id="labelText" type="text" style="width:64px;" class="labelTextInput" /></div>
+			<div style="float:left;width:150px;height:30px;background-color:none">Font Size <input id="labelFontSize" type="text" style="width:64px;" class="fontSizeInput" /></div>
+
+			<div style="float:left;width:150px;height:30px;display:none;background-color:none">
+			<span style="font-size:9pt;">Height</span><input id="labelHeight" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('labelHeight');" onchange="bd.sideBar.ctr.updateModelFromField('labelHeight');" />
+			<span style="font-size:9pt;">Width</span><input id="labelWidth" type="text" style="width:34px;" onkeyup="bd.sideBar.ctr.updateModelFromField('labelWidth');" onchange="bd.sideBar.ctr.updateModelFromField('labelWidth');" />
+			</div>
+			<!-- <div style="float:left;width:150px;height:30px;background-color:orange"><span style="font-size:9pt;">Width</span><input id="labelWidth" type="text" style="width:44px;" onkeyup="bd.sideBar.ctr.updateModelFromField('labelWidth');" onchange="bd.sideBar.ctr.updateModelFromField('labelWidth');" /></div> -->
+			<div style="float:left;width:150px;height:40px;display:none;background-color:none">
+				<input id="gameLabelRadio" type="radio" name="playerLabels" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Shared Label<br><input id="playerLabelRadio" type="radio" name="playerLabels" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Label per Player
+			</div>
+			<div style="float:left;width:300px;height:30px;background-color:none">
+				<input type="checkbox" id="dragabbleLabelCheckbox" class="isDraggableCheckbox" name="dragabbleLabelCheckbox" value="draggable" >Draggable <input type="checkbox" id="visibleLabelCheckbox" class="isVisibleCheckbox" name="visibleLabelCheckbox" value="visible"  />Visible
+			</div>
+		</div>
+		<!-- <div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.image.ctr.setupImageSelector(0)"></div> -->
+		<!-- <div id="labelColorPicker" style="float:left;width:70px;height:70px;cursor:pointer;background-color:teal" ></div> -->
+	</div>
+
+
+</div>
+
+
+<div id="sideBarVideoPanel" style="float:left;width:100%;height:120px;background-color:yellow;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:purple;">
+		<div style="float:left;width:200px;height:30px;background-color:orange">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:orange">Height <input class="heightInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:orange">Width <input class="widthInput" type="text" style="width:114px;" /></div>
+		<!-- <input id="gameVideoRadio" type="radio" name="playerVideos" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Game Video<br><input id="playerVideoRadio" type="radio" name="playerVideos" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Player Video -->
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetVideo'])"></div>
+
+</div>
+
+<div id="sideBarTextInputPanel" style="float:left;width:100%;height:120px;background-color:none;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:none">Height <input class="heightInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:none">Width <input class="widthInput" type="text" style="width:114px;" /></div>
+
+	</div>
+
+
+</div>
+
+<div id="sideBarSoundPanel" style="float:left;width:100%;height:120px;border-bottom:1px solid black;background-color:none;overflow-y:scroll;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetSound'])">
+		<img id="soundImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+
+</div>
+
+<div id="sideBarGridPanel" style="float:left;width:100%;height:120px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:none;">
+		<a href="#" onclick="return (function(){ bd.overlay.ctr.showOverlay('gridEditor');return false;})();">Edit Grid</a>
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input type="text" class="nameInput" style="width:114px;" /></div>
+		<div style="float:left;width:70px;height:70px;margin-left:25px;margin-top:25px;cursor:pointer;background-color:none" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])">
+		<img id="gridImageSelector" style="height:70px;width:70px;" src="" /><span style="font-size:8pt">Click to edit</span>
+	</div>
+	</div>
+	<!-- <div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.image.ctr.setupImageSelector(0)"></div> -->
+</div>
+
+<div id="sideBarTablePanel" style="float:left;width:100%;height:280px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;overflow-y:scroll;display:none">
+
+	<div style="float:left;width:100%;height:120px;margin-top:5px;margin-bottom:15px;background-color:none;">
+
+		<div style="float:left;width:66%;height:120px;background-color:none;">
+			<div style="float:left;width:100%;margin-top:5px;margin-bottom:2px;background-color:none;">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+			<div style="float:left;width:100%;margin-top:5px;margin-bottom:2px;background-color:none;"><a href="#" onclick="return (function(){ bd.overlay.ctr.showOverlay('columnEditor');return false;})();">Edit columns</a></div>
+			<div style="float:left;height:30px;margin-top:5px;margin-bottom:2px;margin-right:5px;background-color:none;">
+				<select class="tableDropDown">
+				</select>
+			</div>
+			<div style="float:left;height:30px;margin-top:5px;margin-bottom:2px;background-color:none;"><a class="tableInstanceEdit" href="#" onclick="return (function(){ bd.overlay.ctr.showOverlay('tableEditor');return false;})();">edit</a><a class="tableInstanceDelete" href="#" onclick="bd.table.ctr.deleteInstance()">delete</a></div>
+		</div>
+		<div style="float:left;width:34%;height:120px;background-color:none;">
+			<div style="width:50px;height:50px;position:relative;cursor:pointer;background-color:none;margin-left:auto;margin-right:auto;" onclick="bd.table.ctr.addInstance()"><img src="/static/images/buttons/additem-up.png"/></div>
+			<div style="float:left;width:100%;margin-left:auto;margin-right:auto;background-color:none;">Add Instance</div>
+		</div>
+
+	</div>
+
+	<div style="float:left;width:100%;height:120px;margin-top:5px;margin-bottom:15px;background-color:none;">
+		<div></div>
+	</div>
+
+</div>
+
+<div id="sideBarSpreadsheetPanel" style="float:left;width:100%;height:120px;background-color:yellow;display:none">
+
+	<div style="float:left;width:200px;height:120px;background-color:purple;">
+		<div style="float:left;width:200px;height:30px;background-color:orange">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:orange">Spreadsheet Key <input class="spreadsheetKeyInput" type="text" style="width:114px;" /></div>
+		<input id="gameSpreadsheetRadio" type="radio" name="playerSpreadsheet" value="game" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Game Spreadsheet<br><input id="playerSpreadsheetRadio" type="radio" name="playerSpreadsheet" value="player" onchange="bd.sideBar.ctr.entityPlayerRadioChanged(this)">Player Spreadsheet
+	</div>
+
+	<div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.overlay.ctr.showOverlay('imageSelection',['assetImage'])"></div>
+
+</div>
+
+
+
+<div id="sideBarGameViewPanel" style="float:left;width:100%;height:120px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<div style="float:left;width:200px;height:30px;background-color:none">
+			<span>Gravity</span><input class="gravityYInput" type="text" style="width:34px;" />
+			<!-- <select id="gameViewPropType"style="width:100px; onchange="bd.sideBar.ctr.setPropType()"><option value="game">Game-wide</option><option value="player">Player specific</option><option value="local">Local Copy</option></select> -->
+		</div>
+	</div>
+	<!-- <div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.image.ctr.setupImageSelector(0)"></div> -->
+
+</div>
+
+
+<div id="sideBarMelonViewPanel" style="float:left;width:100%;height:120px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input class="nameInput" type="text" style="width:114px;" /></div>
+		<span>Follow instance:</span><select id="followInstanceMelonViewSelect" onchange="bd.sideBar.ctr.updateInstanceIdToFollow()"><option>An Instance</option></select>
+	</div>
+	<!-- <div style="float:left;width:70px;height:70px;margin-left:25px;cursor:pointer;background-color:teal" onclick="bd.image.ctr.setupImageSelector(0)"></div> -->
+
+</div>
+
+
+<div id="sideBarPhaserViewPanel" style="float:left;width:100%;height:120px;background-color:none;border-top:1px solid black;border-bottom:1px solid black;display:none">
+
+	<div style="float:left;width:200px;height:70px;background-color:none;">
+		<div style="float:left;width:200px;height:30px;background-color:none">Name <input id="phaserViewName" class="nameInput" type="text" style="width:114px;" /></div>
+		<input type="checkbox" class="gridVisibleCheckbox" id="gridVisiblePhaserViewCheckbox" name="gridVisiblePhaserViewCheckbox" value="visible" /> Grid Visible <br/>
+		<a href="#" onclick="return bd.sideBar.ctr.resizeView()">Resize View</a><br/>
+		<div style="float:left;width:100px;height:30px;background-color:none">Camera Height <input class="cameraHeightInput" type="text" style="width:34px;" /></div>
+		<div style="float:left;width:100px;height:30px;background-color:none">Camera Width <input class="cameraWidthInput" type="text" style="width:34px;" /></div>
+		<span>Follow instance:</span><select id="followInstancePhaserViewSelect" class="followInstanceDropdown" onchange="bd.sideBar.ctr.updateInstanceIdToFollowPhaserView()"><option>An Instance</option></select>
+	</div>
+
+</div>
+
+<div id="sideBarImagePanel" style="float:left;width:100%;height:100%;background-color:yellow;display:none">
+
+<div style="float:left;width:100%;height:80px;margin-bottom:10px;background-color:purple">
+<div style="float:left;width:20px;height:100%;background-color:teal">1</div>
+<div style="float:left;width:50px;height:50px;background-color:red"></div>
+</div>
+
+<div style="float:left;width:100%;height:80px;margin-bottom:10px;background-color:purple">
+<div style="float:left;width:20px;height:100%;background-color:teal">2</div>
+<div style="float:left;width:50px;height:50px;background-color:red"></div>
+</div>
+
+</div>
+
+
+<div id="sideBarInstancePanel" style="float:left;width:100%;height:100%;background-color:none;display:none">
+
+	{% for i in 9|get_range %}
+	<div id="instanceBox{{ i }}" style="float:left;width:90px;height:100px;margin-bottom:5px;margin-left:12px;background-color:none">
+		<div id="instanceBoxImageBackground{{ i }}" style="float:left;width:60px;height:60px;margin-left:15px;margin-top:5px;cursor:pointer;background-color:none"><img id="instanceBoxPicture{{ i }}" style="max-width:60px;max-height:60px;" /></div>
+		<div style="float:left;width:100%;height:30px;margin-top:5px;background-color:none"><input id="instanceBoxText{{ i }}" style="width:80px;margin-left:5px;" type="text" onchange="bd.sideBar.ctr.changeInstanceName({{ i }})" onkeyup="bd.sideBar.ctr.changeInstanceName({{ i }})" /></div>
+	</div>
+	{% endfor %}
+	<img id="instancePanelUpArrow" src="/static/images/buttons/navup-up.png" style="float:left;width:30px;height:30px;margin-left:120px;cursor:pointer;background-color:none" onclick="bd.sideBar.ctr.clickInstanceArrow('up');" />
+	<img id="instancePanelDownArrow" src="/static/images/buttons/navdown-up.png" style="float:left;width:30px;height:30px;margin-left:20px;cursor:pointer;background-color:none" onclick="bd.sideBar.ctr.clickInstanceArrow('down');" />
+
+</div>
+
+
+<div id="sideBarTraitPanel" style="float:left;width:100%;margin-top:5px;background-color:#DDDDDD;display:none">
+	{% for i in 4|get_range %}
+		<div id="traitBox{{ i }}" style="float:left;width:100%;height:43px;margin-top:5px;border:1px solid black;background-color:none;">
+			<div style="float:left;width:100%;height:20px;background-color:none;">
+				<input id="traitInputName{{ i }}" type="text" style="width:75px;" value="Trait Name" onkeyup="bd.sideBar.ctr.updateModelFromField('traitInputName',{{ i }});" onchange="bd.sideBar.ctr.updateModelFromField('traitInputName',{{ i }});" />
+				<select id="traitType{{ i }}" style="width:100px;" onchange="bd.traits.ctr.updateTraitType(0,{{ i }},null)">
+					<optgroup label="Single Types">
+						<option value="value">Value</option>
+						<option value="piece">Piece</option>
+						<option value="target">Target</option>
+						<option value="player">Player</option>
+					</optgroup>
+					<optgroup label="List Types">
+						<option value="valueList">Value List</option>
+					</optgroup>
+				</select>
+				<!--
+				<select id="traitVisibility{{ i }}" onchange="bd.traits.ctr.updateTraitVisibility({{ i }})">
+					<option value="visible">Visible</option>
+					<option value="hidden">Hidden</option>
+				</select> -->
+				<img src="/static/images/x.png" style="float:right;width:20px;height:20px;margin-right:20px;cursor:pointer;" onclick="bd.traits.ctr.deleteTrait({{ i }})" />
+			</div>
+
+			<div style="float:left;width:100%;height:20px;background-color:none;">
+				<div id="traitInputValueContainer{{ i }}" onclick="bd.traits.ctr.clickTraitValueContainer(0,{{ i }})" style="float:left;width:75px;height:100%;background-color:none;">
+					<select id="traitInputValueSelect{{ i }}" style="width:75px;display:none;" onchange="bd.traits.ctr.traitValueChangeHandler('select',0,{{ i }})"></select>
+					<input id="traitInputValue{{ i }}" type="text" style="width:75px;" value="Trait Value" onkeyup="bd.sideBar.ctr.updateModelFromField('traitInputValue',{{ i }});" onchange="bd.sideBar.ctr.updateModelFromField('traitInputValue',{{ i }});" />
+				</div>
+				<select id="traitScope{{ i }}" onchange="bd.traits.ctr.updateTraitScope({{ i }})">
+					<optgroup label="Property is for...">
+						<option value="local">this entity</option>
+						<option value="global">all entities</option>
+					</optgroup>
+				</select>
+				<!--
+				<select>
+					<optgroup label="Default value is">
+						<option>shared default</option>
+						<option>own default</option>
+					</optgroup>
+				</select> -->
+			</div>
+
+		</div>
+	{% endfor %}
+	<div id="traitPanelUpArrow" style="float:left;width:30px;height:30px;margin-left:80px;cursor:pointer;background-color:none" onclick="bd.traits.ctr.clickTraitArrow('up');">
+		<img style="float:left;width:30px;height:30px;" src="/static/images/upArrow.png" />
+	</div>
+	<div id="traitPanelDownArrow" style="float:left;width:30px;height:30px;margin-left:20px;cursor:pointer;background-color:none" onclick="bd.traits.ctr.clickTraitArrow('down');">
+		<img style="float:left;width:30px;height:30px;" src="/static/images/downArrow.png" />
+	</div>
+
+	<div id="newTrait" style="float:right;width:120px;height:30px;margin-left:30px;cursor:pointer;background-color:none" onclick="bd.traits.ctr.newTrait();">
+		<img style="float:left;width:30px;height:30px;" src="/static/images/plus.png" />
+		<div style="float:left;height:20px;width:80px;margin-left:5px;margin-top:5px;background-color:none;">
+			<span style="font-size:10pt;">New Property</span>
+		</div>
+	</div>
+
+</div>
+
+</div> <!-- Sidebar end-->

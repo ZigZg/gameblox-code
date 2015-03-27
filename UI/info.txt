@@ -1,0 +1,2 @@
+	columnEditController.js and columnEditor.html both deal with a overlay that is used to edit the name, type (e.g. Text, Number), and number of columns in a table.
+	tableEditController.js and tableEditor.html both deal with an overlay that allows a user to directly edit the table's rows and data.

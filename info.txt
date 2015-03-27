@@ -1,0 +1,3 @@
+	The componentFiles folder contains the code that makes up the representation of the table component itself.
+	The modelTags folder contains the code that specifies the unique properties of the table component.
+	The UI folder contains the code for the user interface for the table.
